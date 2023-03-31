@@ -1,12 +1,7 @@
 # CSC111 Course Project Requirements
 
 # Testing and code checking
-hypothesis~=6.62.0
-pytest~=7.2.0
-python-ta~=2.4.0
-
 cohere~=3.10.0
 numpy~=1.24.2
 openai~=0.27.2
-
 lyricsgenius~=3.0.1

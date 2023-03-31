@@ -1,3 +1,4 @@
+"""something"""
 from lyricsgenius import Genius
 import cohere
 from discography import Discography, Song
