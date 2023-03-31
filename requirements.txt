@@ -13,3 +13,4 @@ numpy~=1.24.2
 openai~=0.27.2
 
 lyricsgenius~=3.0.1
+customtkinter~=5.1.2
