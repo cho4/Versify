@@ -66,7 +66,7 @@ class Song:
     def lyrical_similarity(self, other: Song) -> float:
         """
         Returns a float between 0 and 1 based on how lyrically similar self is to other based on comparing
-        their self.embedding
+        their self.embedding values
         """
         a = self.embedding
         b = other.embedding
