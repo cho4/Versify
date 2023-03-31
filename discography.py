@@ -46,11 +46,14 @@ class Discography:
         Return the top five songs in the Discography with the highest degrees
         """
         top_five = []
-        degrees = {len(self.songs[title].similar_songs): title for title in self.songs}
-        for i in range(5):
+        songs = [song for song in self.songs.values()]
+        degrees = [len(song.similar_songs) for song in self.songs.values()]
+        for _ in range(5):
             k = max(degrees)
-            title = degrees.pop(k)
-            top_five.append(self.songs[title])
+            i = degrees.index(k)
+            degrees.pop(i)
+            song = songs.pop(i)
+            top_five.append(song)
 
         return tuple(top_five)
 
