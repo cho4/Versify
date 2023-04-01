@@ -21,8 +21,9 @@ class Song:
     - title and lyrics are matching of the actual song
     - embedding is created from cohere API call
     - all songs in similar_songs have the same artist
-    - if two songs have an edge, then they are in each other's similar_songs
-    - all(title == song.title for title, song in similar_songs.items())
+    - all(self in song.similar_songs for song in self.similar_songs.values())
+    - self not in self.similar_songs
+    - all(title == song.title for title, song in self.similar_songs.items())
     """
     title: str
     lyrics: str
@@ -66,7 +67,7 @@ class Discography:
     Representation Invariants:
     - artist_name is of an artist in given database
     - song in songs are all from the same artist
-    - all(title == song.title for title, song in songs.items())
+    - all(title == self.songs[title].title for title in self.songs)
     """
     artist_name: str
     songs: dict[str, Song]
