@@ -5,9 +5,10 @@ from discography import Discography, Song
 from sqlite3 import connect, Cursor, Connection
 import openai
 import tiktoken
+from constants import *
 
-cohere_apikey = 'qiqWWzNgpO0oJ5pzLu21ETOuC37beHi6ON0XaigM'
-openai.api_key = ''
+cohere_apikey = c_apikey
+openai.api_key = o_apikey
 encoding = tiktoken.encoding_for_model("gpt-3.5-turbo")
 model_engine = "gpt-3.5-turbo"
 co = cohere.Client(cohere_apikey)
