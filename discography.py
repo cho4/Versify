@@ -14,8 +14,13 @@ class Song:
 
     This class creates a song object that holds information about its title, lyrics, and embedding.
 
-    Embedding is a list of floats created from cohere library that is going to be used to compare two distinct Song
-    objects
+    Instance Attributes:
+    - title: title of the Song
+    - lyrics: lyrics of the Song
+    - embedding: a list of floats created from cohere library that is
+    going to be used to compare two distinct Song objects
+    - similar_songs: a dictionary that stores other songs that are similar
+    to self (there is an edge between the two)
 
     Representation Invariants:
     - title and lyrics are matching of the actual song
@@ -62,7 +67,11 @@ class Song:
 
 class Discography:
     """
-    Discography Class represented by a Graph datastructure
+    Discography Class of a single artist represented by a Graph datastructure
+
+    Instance Attributes:
+    - artist_name: name of the artist's Discography
+    - songs: mapping of song title to Song object up to 100 songs of the artist
 
     Representation Invariants:
     - artist_name is of an artist in given database
@@ -76,6 +85,8 @@ class Discography:
         """
         Discography initializer
 
+        Initializes Discography with the given name as self.artist_name and starts with 0 songs.
+
         Preconditions:
         - artist_name != ''
         """
@@ -84,7 +95,7 @@ class Discography:
 
     def add_song(self, title: str, lyrics: str, embedding: list[float]) -> None:
         """
-        Creates a Song object
+        Creates a Song object for the artist with given arguments, and adds it to self.songs
 
         Preconditions:
         - title != ''
@@ -97,6 +108,8 @@ class Discography:
     def add_similarity_edge(self, song1: Song, song2: Song) -> None:
         """
         Add an edge between song1 and song2
+
+        This ultimately adds each song into others Song.similar_songs
 
         Preconditions:
         - song1 is not song2
