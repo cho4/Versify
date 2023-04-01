@@ -72,7 +72,7 @@ class VersifyGUI:
         self.progress_bar.start()
         self.progress_message.configure(text=choice(self.progress_text))
         self.progress_message.pack()
-        # disabling the generate button and entry box so they cannot be used again during this process
+        # disabling the generate button and entry box, so they cannot be used again during this process
         self.button.configure(state=tk.DISABLED)
         self.entry.configure(state=tk.DISABLED)
 
@@ -116,7 +116,7 @@ class VersifyGUI:
 
             song_lyrics.configure(yscrollcommand=scrollbar.set)
 
-        # stops the progress bar and enables the button for more generation
+        # stops the progress bar and enables the button and entry box for more generation
         self.progress_bar.stop()
         self.progress_bar.pack_forget()
         self.progress_message.pack_forget()
