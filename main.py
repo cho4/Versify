@@ -14,11 +14,15 @@ model_engine = "gpt-3.5-turbo"
 co = cohere.Client(cohere_apikey)
 
 
-def generate_discography(artist_name: str) -> Discography:
+def generate_discography(artist_name: str) -> Discography | None:
     """
     """
     conn, curr = connect_to_database()
     songs = get_songs(artist_name, curr)
+
+    if songs == []:
+        return None
+
     discography = Discography(artist_name)
 
     for i in range(min(100, len(songs))):
@@ -59,7 +63,8 @@ def generate_song(discography: Discography) -> str:
         song_lyrics += song.lyrics
 
     system_description_content = 'You generate lyrics of a song in the style of example songs that you are given.'
-    prompt = f"Write a unique and original song lyrics in a similar style to that of the following songs: {song_lyrics}." \
+    prompt = f"Write a unique and original song lyrics in a similar style to that of the following songs: " \
+             f"{song_lyrics}." \
              f" Ensure that the lyrics are completely original! Don't reuse phrasing from the given lyrics. " \
              f"Remove any additional text that is not a part of the lyrics!"
 
@@ -104,5 +109,6 @@ def connect_to_database() -> tuple[Connection, Cursor]:
 def get_songs(artist_name: str, curr: Cursor) -> list[tuple[str, str]]:
     """
     """
-    curr.execute('SELECT title, lyrics FROM songs WHERE artist = ? ORDER BY views DESC', (artist_name,))
+    curr.execute('SELECT title, lyrics FROM songs WHERE artist = ? COLLATE NOCASE ORDER BY views DESC',
+                 (artist_name.lower(),))
     return curr.fetchall()
