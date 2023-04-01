@@ -23,8 +23,11 @@ def get_api_keys() -> tuple[str, str]:
 def generate_discography(artist_name: str) -> Discography | str:
     """
     """
-    cohere_apikey, openai.api_key = get_api_keys()
-    co = cohere.Client(cohere_apikey)
+    try:
+        cohere_apikey, openai.api_key = get_api_keys()
+        co = cohere.Client(cohere_apikey)
+    except:
+        return "API_ERROR"
 
     try:
         conn, curr = connect_to_database()
@@ -33,7 +36,6 @@ def generate_discography(artist_name: str) -> Discography | str:
 
     except:
         return "DATABASE_ERROR"
-
 
     songs = get_songs(artist_name, curr)
     discography = Discography(artist_name)
@@ -56,18 +58,20 @@ def generate_discography(artist_name: str) -> Discography | str:
 
 def generate_song_title(lyrics: str) -> str:
     """"""
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are a song title generator based on given song lyrics"},
+                {"role": "user", "content": f"Create an appopriate song title for these lyrics: {lyrics}. Make sure"
+                                            f"to give only the song name and no other additional text."},
+            ]
+        )
 
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "system", "content": "You are a song title generator based on given song lyrics"},
-            {"role": "user", "content": f"Create an appopriate song title for these lyrics: {lyrics}. Make sure"
-                                        f"to give only the song name and no other additional text."},
-        ]
-    )
-
-    title = response.choices[0]['message']['content']
-    return title
+        title = response.choices[0]['message']['content']
+        return title
+    except:
+        return "API_ERROR"
 
 
 def generate_song(discography: Discography) -> str:
