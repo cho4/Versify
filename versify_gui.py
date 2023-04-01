@@ -131,12 +131,6 @@ class VersifyGUI:
             song_lyrics.configure(state="disabled")
             song_lyrics.grid(row=0, column=0, sticky="nsew")
 
-            # creates the scrollbar
-            scrollbar = customtkinter.CTkScrollbar(song_win, command=song_lyrics.yview)
-            scrollbar.grid(row=0, column=1, sticky="ns")
-
-            song_lyrics.configure(yscrollcommand=scrollbar.set)
-
         # removes the progress bar and enables the button and entry box for more generation
         self.progress_bar.stop()
         self.progress_bar.pack_forget()
