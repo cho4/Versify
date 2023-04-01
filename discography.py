@@ -3,6 +3,23 @@ from __future__ import annotations
 import numpy as np
 
 class Song:
+    """
+    Song class for Versify Project
+
+    This class creates a song object that holds information about its title, lyrics, and embedding.
+
+    Embedding is a list of floats created from cohere library that is going to be used to compare two distinct Song
+    objects
+
+    Representation Invariants:
+    - title and lyrics are matching of the actual song
+    - embedding is created from cohere API call
+    - all songs in similar_songs have the same artist
+    """
+    title: str
+    lyrics: str
+    embedding: list[float]
+    similar_songs: dict[str, Song]
 
     def __init__(self, title: str, lyrics: str, embedding: list[float]) -> None:
         """
@@ -34,7 +51,13 @@ class Song:
 class Discography:
     """
     Discography Class represented by a Graph datastructure
+
+    Representation Invariants:
+    - artist_name is of an artist in given database
+    - song in songs are all from the same artist
     """
+    artist_name: str
+    songs: dict[str, Song]
 
     def __init__(self, artist_name: str) -> None:
         """
