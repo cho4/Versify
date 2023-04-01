@@ -1,8 +1,7 @@
 """
 File containing the user interface for Versify
 """
-from discography import *
-from main import *
+from top_level_func import *
 import tkinter as tk
 from tkinter import messagebox
 import customtkinter
