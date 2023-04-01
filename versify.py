@@ -90,7 +90,7 @@ class VersifyGUI:
         else:
             # generating the characteristics of the song and placing them on a new window
             song_title = generate_song_title(discography)
-            generated_song = discography.generate_song(discography.top_five_songs())
+            generated_song = generate_song(discography)
 
             # creates a "top level" window (a seperate window from the main one)
             song_win = customtkinter.CTkToplevel(self.root)

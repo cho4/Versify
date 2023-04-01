@@ -2,6 +2,22 @@
 import cohere
 import numpy as np
 
+class Song:
+
+    def __init__(self, title: str, lyrics: str, embedding: list[float]) -> None:
+        self.title = title
+        self.lyrics = lyrics
+        self.embedding = embedding
+        self.similar_songs = {}
+
+    def lyrical_similarity(self, other) -> float:
+        """
+        Returns a float between 0 and 1 based on how lyrically similar self is to other based on comparing
+        their self.embedding values
+        """
+        a = self.embedding
+        b = other.embedding
+        return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
 
 class Discography:
     """
@@ -38,8 +54,8 @@ class Discography:
         for song1 in self.songs:
             for song2 in self.songs:
                 if song1 != song2:
-                    if song1.lyrical_similarity(song2) > threshold:
-                        self.add_similarity_edge(song1, song2)
+                    if self.songs[song1].lyrical_similarity(self.songs[song2]) > threshold:
+                        self.add_similarity_edge(self.songs[song1], self.songs[song2])
 
     def top_five_songs(self) -> tuple[Song]:
         """
@@ -48,7 +64,7 @@ class Discography:
         top_five = []
         songs = [song for song in self.songs.values()]
         degrees = [len(song.similar_songs) for song in self.songs.values()]
-        for _ in range(5):
+        for _ in range(min(5, len(self.songs))):
             k = max(degrees)
             i = degrees.index(k)
             degrees.pop(i)
@@ -56,21 +72,3 @@ class Discography:
             top_five.append(song)
 
         return tuple(top_five)
-
-
-class Song:
-
-    def __init__(self, title: str, lyrics: str, embedding: list[float]) -> None:
-        self.title = title
-        self.lyrics = lyrics
-        self.embedding = embedding
-        self.similar_songs = {}
-
-    def lyrical_similarity(self, other: Song) -> float:
-        """
-        Returns a float between 0 and 1 based on how lyrically similar self is to other based on comparing
-        their self.embedding values
-        """
-        a = self.embedding
-        b = other.embedding
-        return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
