@@ -54,7 +54,7 @@ class VersifyGUI:
         # creating a progress bar with randomly selected text underneath
         self.progress_bar = customtkinter.CTkProgressBar(
             self.root, orientation='horizontal', mode='indeterminate', width=500, indeterminate_speed=0.5)
-        self.progress_text = customtkinter.CTkLabel(self.root, text=choice(self.progress_text),
+        self.progress_message = customtkinter.CTkLabel(self.root, text=choice(self.progress_text),
                                                     font=customtkinter.CTkFont(family="Futura", size=14))
         # generate button, once clicked will call self.generate()
         self.button = customtkinter.CTkButton(
@@ -70,7 +70,8 @@ class VersifyGUI:
         # shows the progress bar and text
         self.progress_bar.pack(pady=20)
         self.progress_bar.start()
-        self.progress_text.pack()
+        self.progress_message.configure(text=choice(self.progress_text))
+        self.progress_message.pack()
         # disabling the generate button so it cannot be pressed again
         self.button.configure(state=tk.DISABLED)
 
@@ -104,7 +105,7 @@ class VersifyGUI:
         # stops the progress bar and enables the button for more generation
         self.progress_bar.stop()
         self.progress_bar.pack_forget()
-        self.progress_text.pack_forget()
+        self.progress_message.pack_forget()
         self.button.configure(state=tk.NORMAL)
 
 
