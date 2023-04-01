@@ -98,13 +98,13 @@ class VersifyGUI:
             song_win.geometry('700x1000')
             song_win.title(song_title)
 
-            song_lyrics = customtkinter.CTkTextbox(master=song_win, width=600, state="disabled",
+            song_lyrics = customtkinter.CTkTextbox(master=song_win, width=650, length=900, state="disabled",
                                                    font=customtkinter.CTkFont(family="Futura", size=12))
-            song_lyrics.pack(padx=10, pady=20)
+            song_lyrics.pack(padx=5, pady=20)
             song_lyrics.insert("0.0", generated_song)
 
             scrollbar = customtkinter.CTkScrollbar(song_win, command=song_lyrics.yview)
-            scrollbar.grid(row=0, column=1, sticky="ns")
+            scrollbar.pack()
 
             song_lyrics.configure(yscrollcommand=scrollbar.set)
 
