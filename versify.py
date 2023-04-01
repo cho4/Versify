@@ -72,8 +72,9 @@ class VersifyGUI:
         self.progress_bar.start()
         self.progress_message.configure(text=choice(self.progress_text))
         self.progress_message.pack()
-        # disabling the generate button so it cannot be pressed again
+        # disabling the generate button and entry box so they cannot be used again during this process
         self.button.configure(state=tk.DISABLED)
+        self.entry.configure(state=tk.DISABLED)
 
         # threading is used to call self.generate() seperately since otherwise, the method call within,
         # generate_discography(), will freeze the program due to the time it takes to complete
@@ -98,10 +99,10 @@ class VersifyGUI:
             song_win.geometry('700x1000')
             song_win.title(song_title)
 
-            song_lyrics = customtkinter.CTkTextbox(master=song_win, width=650, length=900, state="disabled",
+            song_lyrics = customtkinter.CTkTextbox(master=song_win, width=650, height=900, state="disabled",
                                                    font=customtkinter.CTkFont(family="Futura", size=12))
-            song_lyrics.pack(padx=5, pady=20)
             song_lyrics.insert("0.0", generated_song)
+            song_lyrics.pack(padx=5, pady=20)
 
             scrollbar = customtkinter.CTkScrollbar(song_win, command=song_lyrics.yview)
             scrollbar.pack()
@@ -113,6 +114,7 @@ class VersifyGUI:
         self.progress_bar.pack_forget()
         self.progress_message.pack_forget()
         self.button.configure(state=tk.NORMAL)
+        self.entry.configure(state=tk.NORMAL)
 
 
 if __name__ == "__main__":
