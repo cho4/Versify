@@ -96,16 +96,18 @@ class VersifyGUI:
 
             # creates a "top level" window (a seperate window from the main one)
             song_win = customtkinter.CTkToplevel(self.root)
+            song_win.grid_rowconfigure(0, weight=1)
+            song_win.grid_columnconfigure(0, weight=1)
             song_win.geometry('700x1000')
             song_win.title(song_title)
 
             song_lyrics = customtkinter.CTkTextbox(master=song_win, width=650, height=900, state="disabled",
                                                    font=customtkinter.CTkFont(family="Futura", size=12))
             song_lyrics.insert("0.0", generated_song)
-            song_lyrics.pack(padx=5, pady=20)
+            song_lyrics.grid(row=0, column=0, sticky="nsew")
 
             scrollbar = customtkinter.CTkScrollbar(song_win, command=song_lyrics.yview)
-            scrollbar.pack()
+            scrollbar.grid(row=0, column=1, sticky="ns")
 
             song_lyrics.configure(yscrollcommand=scrollbar.set)
 
