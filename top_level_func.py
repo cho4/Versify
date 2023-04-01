@@ -10,6 +10,7 @@ from sqlite3 import connect, Cursor, Connection
 import openai
 import tiktoken
 
+
 def get_api_keys() -> tuple[str, str]:
 
     with open('keys.txt', 'r') as file:
@@ -19,30 +20,38 @@ def get_api_keys() -> tuple[str, str]:
     return cohere_apikey, openai_apikey
 
 
-def generate_discography(artist_name: str) -> Discography | None:
+def generate_discography(artist_name: str) -> Discography | str:
     """
     """
     cohere_apikey, openai.api_key = get_api_keys()
     co = cohere.Client(cohere_apikey)
 
-    conn, curr = connect_to_database()
+    try:
+        conn, curr = connect_to_database()
+    except:
+        return "DATABASE_ERROR"
 
     if not check_artist(artist_name, curr):
-        return None
+        return "ARITST_ERROR"
 
     songs = get_songs(artist_name, curr)
     discography = Discography(artist_name)
 
-    for i in range(min(100, len(songs))):
-        title = songs[i][0]
-        lyrics = songs[i][1]
-        embedding = co.embed([lyrics]).embeddings[0]
-        discography.add_song(title, lyrics, embedding)
+    try:
+        for i in range(min(100, len(songs))):
+            title = songs[i][0]
+            lyrics = songs[i][1]
+            embedding = co.embed([lyrics]).embeddings[0]
+            discography.add_song(title, lyrics, embedding)
 
-    discography.match_all_similarities()
+        discography.match_all_similarities()
 
-    conn.close()   # Close the connection to the database
-    return discography
+        conn.close()   # Close the connection to the database
+        return discography
+    except:
+        conn.close()
+        return "API_ERROR"
+
 
 def generate_song_title(lyrics: str) -> str:
     """"""
@@ -58,6 +67,7 @@ def generate_song_title(lyrics: str) -> str:
 
     title = response.choices[0]['message']['content']
     return title
+
 
 def generate_song(discography: Discography) -> str:
     """Uses ChatGPT API to generate a return a new song
@@ -95,17 +105,21 @@ def generate_song(discography: Discography) -> str:
 
         num_tokens = len(encoding.encode(system_description_content + prompt))
 
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        max_tokens=800,
-        messages=[
-            {"role": "system", "content": system_description_content},
-            {"role": "user", "content": prompt},
-        ]
-    )
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            max_tokens=800,
+            messages=[
+                {"role": "system", "content": system_description_content},
+                {"role": "user", "content": prompt},
+            ]
+        )
 
-    lyrics = response.choices[0]['message']['content']
-    return lyrics
+        lyrics = response.choices[0]['message']['content']
+        return lyrics
+
+    except:
+        return "API_ERROR"
 
 
 def connect_to_database() -> tuple[Connection, Cursor]:
