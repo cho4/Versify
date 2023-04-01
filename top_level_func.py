@@ -28,11 +28,12 @@ def generate_discography(artist_name: str) -> Discography | str:
 
     try:
         conn, curr = connect_to_database()
+        if not check_artist(artist_name, curr):
+            return "ARITST_ERROR"
+
     except:
         return "DATABASE_ERROR"
 
-    if not check_artist(artist_name, curr):
-        return "ARITST_ERROR"
 
     songs = get_songs(artist_name, curr)
     discography = Discography(artist_name)
