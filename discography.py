@@ -73,7 +73,7 @@ class Discography:
         Traverses through self.songs and creates edge for all lyrically similar songs
 
         Preconditions:
-        - len(self.songs) >= 0
+        - len(self.songs) > 0
         """
         threshold = 0.6
 
@@ -86,6 +86,9 @@ class Discography:
     def top_five_songs(self) -> list[Song]:
         """
         Return the top five songs in the Discography with the highest degrees
+
+        Preconditions:
+        - len(self.songs.values()) > 0
         """
         top_five = []
         songs = [song for song in self.songs.values()]
