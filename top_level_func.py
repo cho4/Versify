@@ -1,4 +1,9 @@
-"""something"""
+"""
+Created by: Eugene Cho
+Date created: April 1, 2023
+
+file containing the top level functions for Versify
+"""
 import cohere
 from discography import Discography, Song
 from sqlite3 import connect, Cursor, Connection

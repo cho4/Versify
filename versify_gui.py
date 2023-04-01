@@ -1,5 +1,8 @@
 """
-File containing the user interface for Versify
+Created by: William Chang Liu
+Date created: April 1, 2023
+
+File containing the user interface implementation for Versify
 """
 from top_level_func import *
 import tkinter as tk

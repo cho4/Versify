@@ -1,4 +1,9 @@
-"""classes of Song and Discography"""
+"""
+Created by: Hamin Lee
+Date created: April 1, 2023
+
+file containing the Song and Discography class for Versify
+"""
 from __future__ import annotations
 import numpy as np
 
