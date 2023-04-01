@@ -105,11 +105,11 @@ class VersifyGUI:
                                                    font=customtkinter.CTkFont(family="Futura", size=12))
             song_lyrics.insert("0.0", generated_song)
             song_lyrics.grid(row=0, column=0, sticky="nsew")
-            #
-            # scrollbar = customtkinter.CTkScrollbar(song_win, command=song_lyrics.yview)
-            # scrollbar.pack()
-            #
-            # song_lyrics.configure(yscrollcommand=scrollbar.set)
+
+            scrollbar = customtkinter.CTkScrollbar(song_win, command=song_lyrics.yview)
+            scrollbar.grid(row=0, column=1, sticky="ns")
+
+            song_lyrics.configure(yscrollcommand=scrollbar.set)
 
         # stops the progress bar and enables the button for more generation
         self.progress_bar.stop()
