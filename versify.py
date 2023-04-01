@@ -90,8 +90,8 @@ class VersifyGUI:
             messagebox.showinfo(title='Generation Error', message='Artist cannot be found')
         else:
             # generating the characteristics of the song and placing them on a new window
-            song_title = generate_song_title(discography)
             generated_song = generate_song(discography)
+            song_title = generate_song_title(generated_song)
 
             # creates a "top level" window (a seperate window from the main one)
             song_win = customtkinter.CTkToplevel(self.root)
