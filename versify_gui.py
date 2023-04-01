@@ -14,8 +14,29 @@ from random import choice
 
 class VersifyGUI:
     """Class containing the functionality of the Versify GUI.
+
+    Instance Attributes:
+    - progress_text: list of possible messages to select from during the generation progress
+    - root: class representing the main window of the GUI
+    - title: label widget containing the title text of the GUI
+    - desc: label widget containing the description underneath the title of the GUI
+    - entry: entry box widget for the user to input an artists name
+    - progress_bar: progress bar widget to display during generation process
+    - progress_message: label widget containing a randomly selected loading message from self.progress_text
+    - button: button widget associated with starting the generation process
     """
-    def __init__(self):
+    progress_text: list[str]
+    root: customtkinter.windows.ctk_tk.CTk
+    title: customtkinter.windows.widgets.ctk_label.CTkLabel
+    desc: customtkinter.windows.widgets.ctk_label.CTkLabel
+    entry: customtkinter.windows.widgets.ctk_entry.CTkEntry
+    progress_bar: customtkinter.windows.widgets.ctk_progressbar.CTkProgressBar
+    progress_message: customtkinter.windows.widgets.ctk_label.CTkLabel
+    button: customtkinter.windows.widgets.ctk_button.CTkButton
+
+    def __init__(self) -> None:
+        """Initialize the main GUI window will all its tkinter widgets.
+        """
         # setting default asthetics of the GUI
         customtkinter.set_appearance_mode("Dark")
         customtkinter.set_default_color_theme("green")
@@ -88,7 +109,8 @@ class VersifyGUI:
         self.root.mainloop()
 
     def start_progress_bar(self) -> None:
-        """Starts the generation progress with the progress bar and loading message
+        """Starts the generation progress with the progress bar and loading message. Calls self.generate() in a new
+        thread after.
         """
         # shows the progress bar and text
         self.progress_bar.pack(pady=20)
@@ -105,17 +127,31 @@ class VersifyGUI:
         threading.Thread(target=self.generate).start()
 
     def generate(self) -> None:
+        """Begins the song generation process using functions from top_level_func.py. Will stop the generation process
+        and create an error pop-up window if an error occurs during generation."""
         """Creates a pop-up window with the generated song, or an error pop-up window if the artist cannot be found.
         """
         # generating the discography
         discography = generate_discography(self.entry.get().strip())
 
-        # creates an error box if the discography is None, otherwise proceeds with song generation
-        if discography is None:
+        # creates an error box if the artist cannot be found, else, proceeds with song generation
+        if discography == "ARTIST_ERROR":
             messagebox.showinfo(title='Generation Error', message='Artist cannot be found')
+        # if there is an error accessing the lyric database, closes the program and presents an error box
+        elif discography == "DATABASE_ERROR":
+            messagebox.showinfo(title='Generation Error',
+                                message='Versify encountered a fatal error accessing the lyric database')
+        # if there is an api error in generating the discography, presents an error message
+        elif discography == "API_ERROR":
+            messagebox.showinfo(title='Generation Error', message='Versify encountered an unexpected error')
         else:
             # generating the characteristics of the song and placing them on a new window
             generated_song = generate_song(discography)
+
+            # if there is an api error generating the song, presents an error message
+            if generated_song == "API_ERROR":
+                messagebox.showinfo(title='Generation Error', message='Versify encountered an unexpected error')
+
             song_title = generate_song_title(generated_song)
 
             # creates a "top level" window (a seperate window from the main one)
