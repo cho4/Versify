@@ -148,11 +148,14 @@ class VersifyGUI:
             # generating the characteristics of the song and placing them on a new window
             generated_song = generate_song(discography)
 
-            # if there is an api error generating the song, presents an error message
+            # if there is an api error generating the song or its title, presents an error message
             if generated_song == "API_ERROR":
                 messagebox.showinfo(title='Generation Error', message='Versify encountered an unexpected error')
 
             song_title = generate_song_title(generated_song)
+
+            if song_title == "API_ERROR":
+                messagebox.showinfo(title='Generation Error', message='Versify encountered an unexpected error')
 
             # creates a "top level" window (a seperate window from the main one)
             song_win = customtkinter.CTkToplevel(self.root)
