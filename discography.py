@@ -1,5 +1,4 @@
 """classes of Song and Discography"""
-import cohere
 import numpy as np
 
 class Song:
