@@ -39,7 +39,8 @@ def generate_song_title(lyrics: str) -> str:
         model="gpt-3.5-turbo",
         messages=[
             {"role": "system", "content": "You are a song title generator based on given song lyrics"},
-            {"role": "user", "content": f"Create an appopriate song title for these lyrics: {lyrics}"},
+            {"role": "user", "content": f"Create an appopriate song title for these lyrics: {lyrics}. Make sure"
+                                        f"to give only the song name and no other additional text."},
         ]
     )
 
@@ -50,25 +51,42 @@ def generate_song(discography: Discography) -> str:
     """Uses ChatGPT API to generate a return a new song
     lyric using the given songs lyrics as prompts for the generation
     """
-    song_prompts = discography.top_five_songs()
-    lyrics = ''
+    song_prompts = list(discography.top_five_songs())
+    song_lyrics = ''
 
     for song in song_prompts:
-        lyrics += f'----------{song.title}----------\n'
-        lyrics += song.lyrics
+        song_lyrics += f'----------{song.title}----------\n'
+        song_lyrics += song.lyrics
 
-    num_tokens = len(encoding.encode(lyrics))
-    # if num_tokens >
+    system_description_content = 'You generate lyrics of a song in the style of example songs that you are given.'
+    prompt = f"Write a unique and original song lyrics in a similar style to that of the following songs: {song_lyrics}." \
+             f" Ensure that the lyrics are completely original! Don't reuse phrasing from the given lyrics. " \
+             f"Remove any additional text that is not a part of the lyrics!"
+
+    num_tokens = len(encoding.encode(system_description_content + prompt))
+
+    while num_tokens >= 3200:
+        song_prompts.pop()
+        song_lyrics = ''
+
+        for song in song_prompts:
+            song_lyrics += f'----------{song.title}----------\n'
+            song_lyrics += song.lyrics
+
+        system_description_content = 'You generate lyrics of a song in the style of example songs that you are given.'
+        prompt = f"Write a unique and original song lyrics in a similar style to that of the following songs: " \
+                 f"{song_lyrics}." \
+                 f" Ensure that the lyrics are completely original! Don't reuse phrasing from the given lyrics. " \
+                 f"Remove any additional text that is not a part of the lyrics!"
+
+        num_tokens = len(encoding.encode(system_description_content + prompt))
 
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
+        max_tokens=800,
         messages=[
-            {"role": "system", "content": "You generate lyrics of a song in the style "
-                                          "of example songs that you are given."},
-            {"role": "user", "content": f"Write a unique and original song lyrics in a similar style to that "
-                                        f"of the following songs: {lyrics}. Ensure that the lyrics are completely"
-                                        f"original! Don't reuse phrasing from the given lyrics. Remove any additional"
-                                        f"text that is not a part of the lyrics!"},
+            {"role": "system", "content": system_description_content},
+            {"role": "user", "content": prompt},
         ]
     )
 
@@ -86,5 +104,5 @@ def connect_to_database() -> tuple[Connection, Cursor]:
 def get_songs(artist_name: str, curr: Cursor) -> list[tuple[str, str]]:
     """
     """
-    curr.execute('SELECT title, lyrics FROM songs WHERE artist = ?', (artist_name,))
+    curr.execute('SELECT title, lyrics FROM songs WHERE artist = ? ORDER BY views DESC', (artist_name,))
     return curr.fetchall()
