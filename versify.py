@@ -103,12 +103,12 @@ class VersifyGUI:
 
             # creates the textbox
             song_lyrics = customtkinter.CTkTextbox(master=song_win, width=650, height=900,
-                                                   font=customtkinter.CTkFont(family="Futura", size=14))
+                                                   font=customtkinter.CTkFont(family="Futura", size=17))
             # inserts the song lyrics into the textbox
             song_lyrics.insert("0.0", generated_song)
             # disables the textbox so the user cannot interact with the lyrics
             song_lyrics.configure(state="disabled")
-            song_lyrics.grid(row=1, column=1, sticky="nsew")
+            song_lyrics.grid(row=0, column=0, sticky="nsew")
 
             # creates the scrollbar
             scrollbar = customtkinter.CTkScrollbar(song_win, command=song_lyrics.yview)
