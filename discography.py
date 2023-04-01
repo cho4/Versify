@@ -7,6 +7,7 @@ file containing the Song and Discography class for Versify
 from __future__ import annotations
 import numpy as np
 
+
 class Song:
     """
     Song class for Versify Project
@@ -20,6 +21,8 @@ class Song:
     - title and lyrics are matching of the actual song
     - embedding is created from cohere API call
     - all songs in similar_songs have the same artist
+    - if two songs have an edge, then they are in each other's similar_songs
+    - all(title == song.title for title, song in similar_songs.items())
     """
     title: str
     lyrics: str
@@ -29,6 +32,8 @@ class Song:
     def __init__(self, title: str, lyrics: str, embedding: list[float]) -> None:
         """
         Song initializer
+
+        It is initialized with given title, lyrics, embedding and no connection to any other Song
 
         Preconditions:
         - title != ''
@@ -53,6 +58,7 @@ class Song:
         b = other.embedding
         return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
 
+
 class Discography:
     """
     Discography Class represented by a Graph datastructure
@@ -60,6 +66,7 @@ class Discography:
     Representation Invariants:
     - artist_name is of an artist in given database
     - song in songs are all from the same artist
+    - all(title == song.title for title, song in songs.items())
     """
     artist_name: str
     songs: dict[str, Song]
