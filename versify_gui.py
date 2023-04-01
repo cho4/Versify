@@ -145,33 +145,29 @@ class VersifyGUI:
         elif discography == "API_ERROR":
             messagebox.showinfo(title='Generation Error', message='Versify encountered an unexpected error')
         else:
-            # generating the characteristics of the song and placing them on a new window
+            # generating the characteristics of the song
             generated_song = generate_song(discography)
-
-            # if there is an api error generating the song or its title, presents an error message
-            if generated_song == "API_ERROR":
-                messagebox.showinfo(title='Generation Error', message='Versify encountered an unexpected error')
-
             song_title = generate_song_title(generated_song)
 
-            if song_title == "API_ERROR":
+            # if there is an api error generating the song or its title, presents an error message
+            if generated_song == "API_ERROR" or song_title == "API_ERROR":
                 messagebox.showinfo(title='Generation Error', message='Versify encountered an unexpected error')
+            else:
+                # creates a "top level" window (a seperate window from the main one)
+                song_win = customtkinter.CTkToplevel(self.root)
+                song_win.grid_rowconfigure(0, weight=1)
+                song_win.grid_columnconfigure(0, weight=1)
+                song_win.geometry('700x1000')
+                song_win.title(song_title)
 
-            # creates a "top level" window (a seperate window from the main one)
-            song_win = customtkinter.CTkToplevel(self.root)
-            song_win.grid_rowconfigure(0, weight=1)
-            song_win.grid_columnconfigure(0, weight=1)
-            song_win.geometry('700x1000')
-            song_win.title(song_title)
-
-            # creates the textbox
-            song_lyrics = customtkinter.CTkTextbox(master=song_win, width=650, height=900,
-                                                   font=customtkinter.CTkFont(family="Futura", size=17))
-            # inserts the song lyrics into the textbox
-            song_lyrics.insert("0.0", generated_song)
-            # disables the textbox so the user cannot interact with the lyrics
-            song_lyrics.configure(state="disabled")
-            song_lyrics.grid(row=0, column=0, sticky="nsew")
+                # creates the textbox
+                song_lyrics = customtkinter.CTkTextbox(master=song_win, width=650, height=900,
+                                                       font=customtkinter.CTkFont(family="Futura", size=17))
+                # inserts the song lyrics into the textbox
+                song_lyrics.insert("0.0", generated_song)
+                # disables the textbox so the user cannot interact with the lyrics
+                song_lyrics.configure(state="disabled")
+                song_lyrics.grid(row=0, column=0, sticky="nsew")
 
         # removes the progress bar and enables the button and entry box for more generation
         self.progress_bar.stop()
