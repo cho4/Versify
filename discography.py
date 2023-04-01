@@ -1,18 +1,31 @@
 """classes of Song and Discography"""
+from __future__ import annotations
 import numpy as np
 
 class Song:
 
     def __init__(self, title: str, lyrics: str, embedding: list[float]) -> None:
+        """
+        Song initializer
+
+        Preconditions:
+        - title != ''
+        - lyrics != ''
+        - embedding != []
+        """
         self.title = title
         self.lyrics = lyrics
         self.embedding = embedding
         self.similar_songs = {}
 
-    def lyrical_similarity(self, other) -> float:
+    def lyrical_similarity(self, other: Song) -> float:
         """
         Returns a float between 0 and 1 based on how lyrically similar self is to other based on comparing
         their self.embedding values
+
+        Preconditions:
+        - self.embedding != []
+        - other.embedding != []
         """
         a = self.embedding
         b = other.embedding
@@ -26,13 +39,21 @@ class Discography:
     def __init__(self, artist_name: str) -> None:
         """
         Discography initializer
+
+        Preconditions:
+        - artist_name != ''
         """
         self.artist_name = artist_name
         self.songs = {}
 
-    def add_song(self, title, lyrics, embedding) -> None:
+    def add_song(self, title: str, lyrics: str, embedding: list[float]) -> None:
         """
         Creates a Song object
+
+        Preconditions:
+        - title != ''
+        - lyrics != ''
+        - embedding != []
         """
         song = Song(title, lyrics, embedding)
         self.songs[title] = song
@@ -40,6 +61,9 @@ class Discography:
     def add_similarity_edge(self, song1: Song, song2: Song) -> None:
         """
         Add an edge between song1 and song2
+
+        Preconditions:
+        - song1 is not song2
         """
         song1.similar_songs[song2.title] = song2
         song2.similar_songs[song1.title] = song1
@@ -47,8 +71,11 @@ class Discography:
     def match_all_similarities(self) -> None:
         """
         Traverses through self.songs and creates edge for all lyrically similar songs
+
+        Preconditions:
+        - len(self.songs) >= 0
         """
-        threshold = 0.8
+        threshold = 0.6
 
         for song1 in self.songs:
             for song2 in self.songs:
@@ -56,7 +83,7 @@ class Discography:
                     if self.songs[song1].lyrical_similarity(self.songs[song2]) > threshold:
                         self.add_similarity_edge(self.songs[song1], self.songs[song2])
 
-    def top_five_songs(self) -> tuple[Song]:
+    def top_five_songs(self) -> list[Song]:
         """
         Return the top five songs in the Discography with the highest degrees
         """
@@ -70,4 +97,4 @@ class Discography:
             song = songs.pop(i)
             top_five.append(song)
 
-        return tuple(top_five)
+        return top_five
