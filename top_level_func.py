@@ -26,11 +26,11 @@ def generate_discography(artist_name: str) -> Discography | None:
     co = cohere.Client(cohere_apikey)
 
     conn, curr = connect_to_database()
-    songs = get_songs(artist_name, curr)
 
-    if songs == []:
+    if not check_artist(artist_name, curr):
         return None
 
+    songs = get_songs(artist_name, curr)
     discography = Discography(artist_name)
 
     for i in range(min(100, len(songs))):
@@ -75,7 +75,7 @@ def generate_song(discography: Discography) -> str:
     prompt = f"Write a unique and original song lyrics in a similar style to that of the following songs: " \
              f"{song_lyrics}." \
              f" Ensure that the lyrics are completely original! Don't reuse phrasing from the given lyrics. " \
-             f"Remove any additional text that is not a part of the lyrics!"
+             f"Remove any additional text that is not a part of the lyrics! Not every verse has to rhyme!"
 
     num_tokens = len(encoding.encode(system_description_content + prompt))
 
@@ -113,6 +113,12 @@ def connect_to_database() -> tuple[Connection, Cursor]:
     conn = connect('lyrics_ds.db')
     curr = conn.cursor()
     return conn, curr
+
+
+def check_artist(artist_name: str, curr: Cursor) -> bool:
+    """Returns True if the artist exists in the data set and False otherwise."""
+    curr.execute('SELECT name FROM artists WHERE name = ? COLLATE NOCASE', (artist_name.lower(),))
+    return curr.fetchone() is not None
 
 
 def get_songs(artist_name: str, curr: Cursor) -> list[tuple[str, str]]:
