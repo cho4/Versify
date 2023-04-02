@@ -4,12 +4,12 @@ Date created: April 1, 2023
 
 File containing the user interface implementation for Versify
 """
-from top_level_func import *
 import tkinter as tk
 from tkinter import messagebox
-import customtkinter
 import threading
 from random import choice
+import customtkinter
+from top_level_func import generate_discography, generate_song, generate_song_title
 
 
 class VersifyGUI:
@@ -128,22 +128,23 @@ class VersifyGUI:
 
     def generate(self) -> None:
         """Begins the song generation process using functions from top_level_func.py. Will stop the generation process
-        and create an error pop-up window if an error occurs during generation."""
-        """Creates a pop-up window with the generated song, or an error pop-up window if the artist cannot be found.
+        and create an error pop-up window if an error occurs during generation.
+
+        Creates a pop-up window with the generated song, or an error pop-up window if the artist cannot be found.
         """
         # generating the discography
         discography = generate_discography(self.entry.get().strip())
 
         # creates an error box if the artist cannot be found, else, proceeds with song generation
         if discography == "ARTIST_ERROR":
-            messagebox.showinfo(title='Generation Error', message='Artist cannot be found')
+            messagebox.showinfo(title='Aritst Not Found Error', message='Artist cannot be found')
         # if there is an error accessing the lyric database, closes the program and presents an error box
         elif discography == "DATABASE_ERROR":
             messagebox.showinfo(title='Generation Error',
                                 message='Versify encountered a fatal error accessing the lyric database')
         # if there is an api error in generating the discography, presents an error message
         elif discography == "API_ERROR":
-            messagebox.showinfo(title='Generation Error', message='Versify encountered an unexpected error')
+            messagebox.showinfo(title='API Error', message='Versify encountered an unexpected error')
         else:
             # generating the characteristics of the song
             generated_song = generate_song(discography)
@@ -151,7 +152,7 @@ class VersifyGUI:
 
             # if there is an api error generating the song or its title, presents an error message
             if generated_song == "API_ERROR" or song_title == "API_ERROR":
-                messagebox.showinfo(title='Generation Error', message='Versify encountered an unexpected error')
+                messagebox.showinfo(title='API Error', message='Versify encountered an unexpected error')
             else:
                 # creates a "top level" window (a seperate window from the main one)
                 song_win = customtkinter.CTkToplevel(self.root)
@@ -178,5 +179,11 @@ class VersifyGUI:
 
 
 if __name__ == "__main__":
-    # starts Versify
-    VersifyGUI()
+    import python_ta
+
+    python_ta.check_all(config={
+        'extra-imports': ['top_level_func', 'tkinter', 'customtkinter', 'threading', 'random'],
+        'allowed-io': [],
+        'max-line-length': 120,
+        'disable': ['too-many-instance-attributes']
+    })
