@@ -151,7 +151,7 @@ class Discography:
             songs = list(self.songs.values())
             degrees = [len(s.similar_songs) for s in self.songs.values()]
 
-            for _ in range(len(self.songs)):
+            for _ in range(5):
                 k = max(degrees)
                 i = degrees.index(k)
                 degrees.pop(i)

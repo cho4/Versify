@@ -6,6 +6,7 @@ file containing the top level functions for Versify
 """
 from sqlite3 import connect, Cursor, Connection
 import sqlite3
+import pickle
 import cohere
 import openai
 import tiktoken
@@ -30,7 +31,7 @@ def generate_discography(artist_name: str) -> Discography | str:
         - artist_name != ""
     """
     try:
-        cohere_apikey, openai.api_key = get_api_keys()
+        cohere_apikey = get_api_keys()[0]
         co = cohere.Client(cohere_apikey)
     except cohere.CohereError:
         return "API_ERROR"
@@ -52,8 +53,9 @@ def generate_discography(artist_name: str) -> Discography | str:
         for song in songs:
             title = song[0]
             lyrics = song[1]
-            embedding = co.embed([lyrics]).embeddings[0]  # Call cohere API to get the embedding of the song lyric
-            discography.add_song(title, lyrics, embedding)
+            if not (title is None or lyrics is None):  # Added to address an issue in the db where some entries are NULL
+                embedding = co.embed([lyrics]).embeddings[0]  # Call cohere API to get the embedding of the song lyric
+                discography.add_song(title, lyrics, embedding)
 
         discography.match_all_similarities()
 
@@ -74,6 +76,7 @@ def generate_song_title(lyrics: str) -> str:
         - lyrics != ""
     """
     try:
+        openai.api_key = get_api_keys()[1]
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[
@@ -117,6 +120,7 @@ def generate_song(discography: Discography) -> str:
     # Keep removing a song from the prompts until the number of tokens for the prompt is at most 3200.
 
     try:
+        openai.api_key = get_api_keys()[1]
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             max_tokens=800,  # Limit the tokens to 800 for the reponse
@@ -219,12 +223,40 @@ def get_songs(artist_name: str, cur: Cursor) -> list[tuple[str, str]]:
         - artist_name != ""
         - There exists at least one song by artist_name in the 'songs' table
     """
-    cur.execute('SELECT title, lyrics FROM songs WHERE artist = ? COLLATE NOCASE ORDER BY views DESC LIMIT 100',
+    cur.execute('SELECT title, lyrics '
+                'FROM songs '
+                'WHERE artist = ? '
+                'COLLATE NOCASE '
+                'ORDER BY views DESC '
+                'LIMIT 100',
                 (artist_name.lower(),))
     # We cap the query results at at most 100 songs because the free version of
     # cohere (when we call co.embed()) only allows 100 API calls per minute
 
     return cur.fetchall()
+
+
+def load_discographies() -> dict[str, Discography]:
+    """Loads and returns a dictionary of already previously Discography objects from discographies.pkl
+    """
+    try:
+        with open('discographies.pkl', 'rb') as file:
+            discographies = pickle.load(file)
+        return discographies
+
+    except EOFError:
+        return {}
+
+
+def save_discographies(discographies: dict[str, Discography]) -> None:
+    """Saves the given dictionary of generated Discography objects to discographies.pkl
+
+    Preconditions:
+        - all(name == discographies[name].artist_name for name in discographies)
+    """
+    with open('discographies.pkl', 'wb') as file:
+        pickle.dump(discographies, file)
+
 # ----------------- HELPER FUNCTIONS -----------------
 
 
@@ -232,7 +264,7 @@ if __name__ == "__main__":
     import python_ta
 
     python_ta.check_all(config={
-        'extra-imports': ['cohere', 'discography', 'sqlite3', 'openai', 'tiktoken'],
-        'allowed-io': ['connect_to_database', 'get_api_keys'],
+        'extra-imports': ['cohere', 'discography', 'sqlite3', 'openai', 'tiktoken', 'pickle'],
+        'allowed-io': ['connect_to_database', 'get_api_keys', 'load_discographies', 'save_discographies'],
         'max-line-length': 120
     })

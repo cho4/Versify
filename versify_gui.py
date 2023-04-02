@@ -9,21 +9,24 @@ from tkinter import messagebox
 import threading
 from random import choice
 import customtkinter
-from top_level_func import generate_discography, generate_song, generate_song_title
+from top_level_func import generate_discography, generate_song, generate_song_title, \
+    load_discographies, save_discographies
+from discography import Discography
 
 
 class VersifyGUI:
     """Class containing the functionality of the Versify GUI.
 
     Instance Attributes:
-    - progress_text: list of possible messages to select from during the generation progress
-    - root: class representing the main window of the GUI
-    - title: label widget containing the title text of the GUI
-    - desc: label widget containing the description underneath the title of the GUI
-    - entry: entry box widget for the user to input an artists name
-    - progress_bar: progress bar widget to display during generation process
-    - progress_message: label widget containing a randomly selected loading message from self.progress_text
-    - button: button widget associated with starting the generation process
+        - progress_text: list of possible messages to select from during the generation progress
+        - root: class representing the main window of the GUI
+        - title: label widget containing the title text of the GUI
+        - desc: label widget containing the description underneath the title of the GUI
+        - entry: entry box widget for the user to input an artists name
+        - progress_bar: progress bar widget to display during generation process
+        - progress_message: label widget containing a randomly selected loading message from self.progress_text
+        - button: button widget associated with starting the generation process
+        - discographies: a mapping of artist name to their corresponding Discography
     """
     progress_text: list[str]
     root: customtkinter.windows.ctk_tk.CTk
@@ -33,10 +36,14 @@ class VersifyGUI:
     progress_bar: customtkinter.windows.widgets.ctk_progressbar.CTkProgressBar
     progress_message: customtkinter.windows.widgets.ctk_label.CTkLabel
     button: customtkinter.windows.widgets.ctk_button.CTkButton
+    discographies: dict[str, Discography]
 
     def __init__(self) -> None:
         """Initialize the main GUI window will all its tkinter widgets.
         """
+        # Stores already created discographies to reduce expensive computations
+        self.discographies = load_discographies()
+
         # setting default asthetics of the GUI
         customtkinter.set_appearance_mode("Dark")
         customtkinter.set_default_color_theme("green")
@@ -132,8 +139,14 @@ class VersifyGUI:
 
         Creates a pop-up window with the generated song, or an error pop-up window if the artist cannot be found.
         """
-        # generating the discography
-        discography = generate_discography(self.entry.get().strip())
+        artist_name = self.entry.get().strip().lower()
+
+        if artist_name not in self.discographies:
+            # generating the discography
+            discography = generate_discography(artist_name)
+        else:
+            # retrieve the already created discography
+            discography = self.discographies[artist_name]
 
         # creates an error box if the artist cannot be found, else, proceeds with song generation
         if discography == "ARTIST_ERROR":
@@ -146,6 +159,11 @@ class VersifyGUI:
         elif discography == "API_ERROR":
             messagebox.showinfo(title='API Error', message='Versify encountered an unexpected error')
         else:
+            if artist_name not in self.discographies:
+                # Memoize the discography in case the user decides to generate another song using the same artist
+                self.discographies[discography.artist_name.lower()] = discography
+                save_discographies(self.discographies)
+
             # generating the characteristics of the song
             generated_song = generate_song(discography)
             song_title = generate_song_title(generated_song)
@@ -182,7 +200,7 @@ if __name__ == "__main__":
     import python_ta
 
     python_ta.check_all(config={
-        'extra-imports': ['top_level_func', 'tkinter', 'customtkinter', 'threading', 'random'],
+        'extra-imports': ['top_level_func', 'tkinter', 'customtkinter', 'threading', 'random', 'discography'],
         'allowed-io': [],
         'max-line-length': 120,
         'disable': ['too-many-instance-attributes']
