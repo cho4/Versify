@@ -33,6 +33,7 @@ def generate_discography(artist_name: str) -> Discography | str:
     try:
         cohere_apikey = get_api_keys()[0]
         co = cohere.Client(cohere_apikey)
+
     except cohere.CohereError:
         return "API_ERROR"
     #  Retrieve API keys and connect to cohere API
@@ -40,13 +41,16 @@ def generate_discography(artist_name: str) -> Discography | str:
     try:
         conn = connect_to_database()
         cur = conn.cursor()
+
         if not check_artist(artist_name, cur):
             return "ARTIST_ERROR"
+
+        songs = get_songs(artist_name, cur)
+
     except sqlite3.Error:
         return "DATABASE_ERROR"
     #  Connect to the lyrics_ds.db database and check if the given artist is in the database
 
-    songs = get_songs(artist_name, cur)
     discography = Discography(artist_name)
 
     try:
@@ -113,7 +117,7 @@ def generate_song(discography: Discography) -> str:
     # The maximum tokens for an API call is 4096 (this includes the prompt and the response message),
     # so to ensure that an error is not raised, we cap the tokens for the prompt to 3200, and 800 for the response
 
-    while num_tokens > 3200:
+    while num_tokens > 3400:
         song_prompts.pop()
         system_description_content, prompt = generate_prompt(song_prompts)
         num_tokens = len(encoding.encode(system_description_content + prompt))
@@ -123,7 +127,7 @@ def generate_song(discography: Discography) -> str:
         openai.api_key = get_api_keys()[1]
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
-            max_tokens=800,  # Limit the tokens to 800 for the reponse
+            max_tokens=600,  # Limit the tokens to 800 for the reponse
             messages=[
                 {"role": "system", "content": system_description_content},
                 {"role": "user", "content": prompt},
@@ -158,8 +162,10 @@ def generate_prompt(song_prompts: list[Song]) -> tuple[str, str]:
     system_description_content = 'You generate lyrics of a song in the style of example songs that you are given.'
     prompt = f"Write a unique and original song lyrics in a similar style to that of the following songs: " \
              f"{song_lyrics}." \
-             f" Ensure that the lyrics are completely original! Don't reuse phrasing from the given lyrics. " \
-             f"Remove any additional text that is not a part of the lyrics!"
+             f" Ensure that the lyrics are completely original! Remove any additional text that is not a part " \
+             f"of the lyrics! Try and use commonly used wording from the given lyrics including slang and profanity, " \
+             f"but don't go out of your way to add it unless they match the style of the lyrics." \
+             f"Don't include the title."
 
     return system_description_content, prompt
 
