@@ -1,6 +1,6 @@
 """Versify: The FUTURE of Songwriting (GUI)
 
-Created by: Willium Chang Liu
+Created by: William Chang Liu
 Date created: April 1, 2023
 
 General Information
@@ -15,7 +15,7 @@ This file contains the code for displaying the GUI for Versify.
 Copyright and Usage Information
 ===============================
 
-This file is Copyright (c) 2023 William Liu.
+This file is Copyright (c) 2023 William Chang Liu.
 """
 import tkinter as tk
 from tkinter import messagebox
