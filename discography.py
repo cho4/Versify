@@ -2,7 +2,8 @@
 Created by: Hamin Lee
 Date created: April 1, 2023
 
-file containing the Song and Discography class for Versify
+File containing the Song and Discography class for Versify
+Discography objects model a graph and Song objects model a vertex/node
 """
 from __future__ import annotations
 import numpy as np
