@@ -148,17 +148,10 @@ class VersifyGUI:
             # retrieve the already created discography
             discography = self.discographies[artist_name]
 
-        # creates an error box if the artist cannot be found, else, proceeds with song generation
-        if discography == "ARTIST_ERROR":
-            messagebox.showinfo(title='Aritst Not Found Error', message='Artist cannot be found')
-        # if there is an error accessing the lyric database, closes the program and presents an error box
-        elif discography == "DATABASE_ERROR":
-            messagebox.showinfo(title='Generation Error',
-                                message='Versify encountered a fatal error accessing the lyric database')
-        # if there is an api error in generating the discography, presents an error message
-        elif discography == "API_ERROR":
-            messagebox.showinfo(title='API Error', message='Versify encountered an unexpected error')
-        else:
+        # checks for errors that may have occured in the discography
+        has_errors = self.check_for_errors(discography)
+
+        if not has_errors:
             if artist_name not in self.discographies:
                 # Memoize the discography in case the user decides to generate another song using the same artist
                 self.discographies[discography.artist_name.lower()] = discography
@@ -166,12 +159,14 @@ class VersifyGUI:
 
             # generating the characteristics of the song
             generated_song = generate_song(discography)
+
+            has_errors = self.check_for_errors(generated_song)
+
             song_title = generate_song_title(generated_song)
 
-            # if there is an api error generating the song or its title, presents an error message
-            if generated_song == "API_ERROR" or song_title == "API_ERROR":
-                messagebox.showinfo(title='API Error', message='Versify encountered an unexpected error')
-            else:
+            has_errors = has_errors or self.check_for_errors(song_title)
+
+            if not has_errors:
                 # creates a "top level" window (a seperate window from the main one)
                 song_win = customtkinter.CTkToplevel(self.root)
                 song_win.grid_rowconfigure(0, weight=1)
@@ -194,6 +189,27 @@ class VersifyGUI:
         self.progress_message.pack_forget()
         self.button.configure(state=tk.NORMAL)
         self.entry.configure(state=tk.NORMAL)
+
+    def check_for_errors(self, function_output: Discography | str) -> bool:
+        """Checks if the input is an error string, and creates a respective error window if necessary. Then returns
+        a boolean value if an error has occured.
+        """
+        # creates an error box and returns true if input matches any of the predetermined error strings.
+        if function_output == "ARTIST_ERROR":
+            messagebox.showinfo(title='Artist Not Found Error', message='Artist cannot be found')
+            return True
+
+        elif function_output == "DATABASE_ERROR":
+            messagebox.showinfo(title='Generation Error',
+                                message='Versify encountered a fatal error accessing the lyric database')
+            return True
+
+        elif function_output == "API_ERROR":
+            messagebox.showinfo(title='API Error', message='Versify encountered an unexpected error')
+            return True
+
+        # returns False if no error was detected.
+        return False
 
 
 if __name__ == "__main__":
