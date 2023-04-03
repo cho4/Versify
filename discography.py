@@ -60,6 +60,7 @@ class Song:
         """
         a = self.embedding
         b = other.embedding
+        # computation taken from https://docs.cohere.ai/docs/embeddings
         return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
 
 
@@ -148,6 +149,7 @@ class Discography:
             return list(self.songs.values())
         else:
             top_five = []
+            # separate lists of songs and their corresponding degrees
             songs = list(self.songs.values())
             degrees = [len(s.similar_songs) for s in self.songs.values()]
 
