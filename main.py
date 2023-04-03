@@ -1,14 +1,22 @@
-"""
+"""Versify: The FUTURE of Songwriting (Main file)
+
 Created by: William Chang Liu, Eugene Cho, Hamin Lee
 Date created: April 1, 2023
 Course: CSC111H1S
 Instructor: Mario Badr
 
--- Main file to run the Course Project: Versify --
+
+General Information
+===============================
 
 Versify aims to utilize natural language processing and lyrical databases to generate completely new song lyrics in the
 style of a given musical artist. This will be entirely based on their most commonly used vocabulary and semantic
 patterns which are derived from existing songs.
+
+Copyright and Usage Information
+===============================
+
+This file is Copyright (c) 2023 William Chang Liu, Eugene Cho, Hamin Lee.
 """
 from versify_gui import VersifyGUI
 

@@ -1,9 +1,22 @@
-"""
+"""Versify: The FUTURE of Songwriting (Classes)
+
 Created by: Hamin Lee
 Date created: April 1, 2023
 
-File containing the Song and Discography class for Versify
+General Information
+===============================
+
+Versify aims to utilize natural language processing and lyrical databases to generate completely new song lyrics in the
+style of a given musical artist. This will be entirely based on their most commonly used vocabulary and semantic
+patterns which are derived from existing songs.
+
+This file contains the Song and Discography class for Versify
 Discography objects model a graph and Song objects model a vertex/node
+
+Copyright and Usage Information
+===============================
+
+This file is Copyright (c) 2023 Hamin Lee, Eugene Cho.
 """
 from __future__ import annotations
 import numpy as np

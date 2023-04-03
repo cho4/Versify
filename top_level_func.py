@@ -1,8 +1,21 @@
-"""
+"""Versify: The FUTURE of Songwriting (Top level functions)
+
 Created by: Eugene Cho
 Date created: April 1, 2023
 
-file containing the top level functions for Versify
+General Information
+===============================
+
+Versify aims to utilize natural language processing and lyrical databases to generate completely new song lyrics in the
+style of a given musical artist. This will be entirely based on their most commonly used vocabulary and semantic
+patterns which are derived from existing songs.
+
+This file contains top level functions used for Versify.
+
+Copyright and Usage Information
+===============================
+
+This file is Copyright (c) 2023 Eugene Cho.
 """
 from sqlite3 import connect, Cursor, Connection
 import sqlite3
