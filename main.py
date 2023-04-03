@@ -8,10 +8,9 @@ Instructor: Mario Badr
 
 General Information
 ===============================
-
-Versify aims to utilize natural language processing and lyrical databases to generate completely new song lyrics in the
-style of a given musical artist. This will be entirely based on their most commonly used vocabulary and semantic
-patterns which are derived from existing songs.
+Versify aims to utilize graphs in conjunction with natural language processing to generate completely new song lyrics in
+the style of a given musical artist. This will be entirely based on their commonly used vocabulary and semantic patterns
+which are derived from their existing songs.
 
 Copyright and Usage Information
 ===============================
