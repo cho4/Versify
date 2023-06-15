@@ -16,3 +16,18 @@ In addition, we generated a separate file called discographies.pkl which contain
 
 ## THE CULMINATION OF VERSIFY
 Following thorough testing and analysis of Versify, we have concluded that the program can accurately capture the style and themes of a given artist to a certain degree. For instance, lyrics generated in the style of a hip-hop artist would typically feature more slang and profanity compared to those of a country artist. The Graph structure and cohere API's embedding feature were conducive to outlining an artist's discography, effectively connecting similar vocabulary and semantic patterns of the artist's lyrics. Moreover, the use of OpenAI's powerful natural language processing AI model, GPT-3.5, allowed our team to develop a high-quality program involving a powerful natural language processing AI. After extensive testing, we are confident in asserting that our project runs stably and satisfactorily. With the use of memoization and a graphical user interface, we extended beyond to prioritize the efficiency and efficacy of our program. Our team has dedicated significant effort to this project, and we hope that it will provide user satisfaction to all users of our program, Versify. 
+
+## REFERENCES
+Altman, Sam. OpenAI API, 2015, https://platform.openai.com/docs/introduction.
+“API Reference.” API Reference - Pandas 1.5.3 Documentation, 2008, https://pandas.pydata.org/docs/reference/index.html.
+Digital, Mason. “SQLite VS Pandas: Performance Benchmarks.” The Data Incubator, 5 Dec. 2022, https://www.thedataincubator.com/blog/2022/11/17/sqlite-vs-pandas-performance-benchmarks/#:~:text=sqlite%20or%20memory-sqlite%20is,seconds%20for%2010%20million%20records.
+Gomez, Aidan. “Add Language AI Capability to Your System.” Cohere AI, 2019, https://docs.cohere.ai/reference/about.
+Gomez, Aidan. “Embeddings.” Cohere AI, 2019, https://docs.cohere.ai/docs/embeddings.
+Nayak, Nikhil. “5 Million Song Lyrics Dataset.” Kaggle, 22 Apr. 2022, https://www.kaggle.com/datasets/nikhilnayak123/5-million-song-lyrics-dataset?resource=download.
+NeuralNine. “Tkinter Beginner Course - Python Gui Development.” YouTube, 29 Sept. 2021, https://youtu.be/ibf5cx221hk.
+Openai. “Openai/Tiktoken: Tiktoken Is a Fast BPE Tokeniser for Use with Openai's Models.” GitHub, https://github.com/openai/tiktoken.
+“Pickle - Python Object Serialization.” Python Documentation, https://docs.python.org/3/library/pickle.html.
+Real Python. “An Intro to Threading in Python.” Real Python, Real Python, 22 May 2022, https://realpython.com/intro-to-python-threading/.
+Schimansky, Tom. “Tomschimansky/Customtkinter: A Modern and Customizable Python UI-Library Based on Tkinter.” GitHub, https://github.com/TomSchimansky/CustomTkinter.
+“SQLITE3 - DB-API 2.0 Interface for SQLite Databases.” Python Documentation, https://docs.python.org/3/library/sqlite3.html.
+“Tkinter - Python Interface to TCL/TK.” Python Documentation, 2001, https://docs.python.org/3/library/tkinter.html.
